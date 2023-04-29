@@ -22,8 +22,10 @@ class GitAction:
         except Exception as e:
             if self.echo:
                 print("Cannot connect to repository!")
+            return False
         else:
             self.__git_add__(path, commit, branch)
+            return True
 
 
     def __parameter_filtering__(self, remotegit, path):
@@ -49,3 +51,4 @@ class GitAction:
                 else:
                     if self.echo:
                         print(f"{filename} File uploaded successfully")
+        return True
