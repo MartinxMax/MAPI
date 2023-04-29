@@ -13,10 +13,10 @@ class GitAction:
 
     def push(self, remotegit=None, path=None, token=None, branch='master', commit='New'):
         if not self.__parameter_filtering__(remotegit, path) or not token:
-            return
+            return False
         repo_owner, repo_name = self.__detection__(remotegit)
         if not repo_owner or not repo_name:
-            return
+            return False
         try:
             self.__repo__ = login(token=token).repository(repo_owner, repo_name)
         except Exception as e:
