@@ -20,19 +20,8 @@ class DingTalk(object):
         self.__token = None
         self.__secret = None
         self.__exho = echo
-        self.__text = {
-            "text": {
-                "content": "{}"
-            },
-            "msgtype": "text"
-        }
-        self.__pic = {
-            "msgtype": "markdown",
-            "markdown": {
-            "title":"{} [{}]",
-            "text": "\n![screenshot]({})\n{}\n\n--[More]({})\n"
-     }
-        }
+
+
     def __build_sign(self):
         try:
             timestamp = str(round(time.time() * 1000))
@@ -56,7 +45,7 @@ class DingTalk(object):
     def demo(func):
         def wrapper(self, *args, **kwargs):
             url = self.__build_sign()
-            data = func(self, *args, **kwargs)
+            data = func(self, *args, **kwargs)  # 将实例对象作为第一个参数传递给被装饰的方法
             try:
                 respon = requests.post(url, json=data, timeout=5)
             except Exception as e:
@@ -69,13 +58,24 @@ class DingTalk(object):
 
     @demo
     def send_text(self, message):
-        textdemo = self.__text.copy()
-        textdemo['text']['content'] = textdemo['text']['content'].format(message)
+        textdemo = {
+            "text": {
+                "content": "{}"
+            },
+            "msgtype": "text"
+        }
+        textdemo['text']['content'] = textdemo['text']['content'].format(message) # 更新消息内容
         return textdemo
 
     @demo
     def send_pic(self,message=' ',title='@Martin',picture=' ',link=' '):
-        picdemo = self.__pic.copy()
+        picdemo = {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": "{} [{}]",
+                "text": "\n![screenshot]({})\n{}\n\n--[More]({})\n"
+            }
+        }
         picdemo['markdown']['title'] = picdemo['markdown']['title'].format(title,str(datetime.now()))
         picdemo['markdown']['text'] = picdemo['markdown']['text'].format(picture,message,link)
         return picdemo
